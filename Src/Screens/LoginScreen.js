@@ -15,32 +15,39 @@ import { LinearGradient } from 'expo-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import { useTheme } from 'react-native-paper';
+import auth from '../../firebase.init';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 const LoginScreen = ({ navigation }) => {
 
   const [data, setData] = React.useState({
-    username: '',
+    email: '',
     password: '',
     check_textInputChange: false,
     secureTextEntry: true,
     isValidUser: true,
     isValidPassword: true,
   });
+  const [user, setUser] = React.useState({
+    email: '',
+    userName: ''
+  });
 
   const { colors } = useTheme();
 
   const textInputChange = (val) => {
-    if (val.trim().length >= 4) {
+    const emailRegex = new RegExp(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
+    if (emailRegex.test(val)) {
       setData({
         ...data,
-        username: val,
+        email: val,
         check_textInputChange: true,
         isValidUser: true
       });
     } else {
       setData({
         ...data,
-        username: val,
+        email: val,
         check_textInputChange: false,
         isValidUser: false
       });
@@ -71,7 +78,8 @@ const LoginScreen = ({ navigation }) => {
   }
 
   const handleValidUser = (val) => {
-    if (val.trim().length >= 4) {
+    const emailRegex = new RegExp(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
+    if (emailRegex.test(val)) {
       setData({
         ...data,
         isValidUser: true
@@ -84,14 +92,25 @@ const LoginScreen = ({ navigation }) => {
     }
   }
 
-  const loginHandle = (userName, password) => {
+  const loginHandle = (email, password) => {
 
-    if (data.username.length === 0 || data.password.length === 0) {
-      Alert.alert('Wrong Input!', 'Username or password field cannot be empty.', [
+    if (data.email.length === 0 || data.password.length === 0) {
+      Alert.alert('Wrong Input!', 'email or password field cannot be empty.', [
         { text: 'OK' }
       ]);
       return;
     }
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in 
+        const user = userCredential.user;
+        setUser({ email: user?.email, userName: user?.email?.split('@')[0] });
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(error)
+      });
   }
 
   return (
@@ -112,7 +131,7 @@ const LoginScreen = ({ navigation }) => {
       >
         <Text style={[styles.text_footer, {
           color: colors.text
-        }]}>Username</Text>
+        }]}>Email</Text>
         <View style={styles.action}>
           <FontAwesome
             name="user-o"
@@ -120,11 +139,13 @@ const LoginScreen = ({ navigation }) => {
             size={20}
           />
           <TextInput
-            placeholder="Your Username"
+            placeholder="Your email"
             placeholderTextColor="#666666"
             style={[styles.textInput, {
               color: colors.text
             }]}
+            textContentType="emailAddress"
+            keyboardType="email-address"
             autoCapitalize="none"
             onChangeText={(val) => textInputChange(val)}
             onEndEditing={(e) => handleValidUser(e.nativeEvent.text)}
@@ -143,7 +164,7 @@ const LoginScreen = ({ navigation }) => {
         </View>
         {data.isValidUser ? null :
           <Animatable.View animation="fadeInLeft" duration={500}>
-            <Text style={styles.errorMsg}>Username must be 4 characters long.</Text>
+            <Text style={styles.errorMsg}>Invalid Email Address.</Text>
           </Animatable.View>
         }
 
@@ -199,7 +220,7 @@ const LoginScreen = ({ navigation }) => {
         <View style={styles.button}>
           <TouchableOpacity
             style={styles.signIn}
-            onPress={() => { loginHandle(data.username, data.password) }}
+            onPress={() => { loginHandle(data.email, data.password) }}
           >
             <LinearGradient
               colors={['#08d4c4', '#01ab9d']}
@@ -287,8 +308,8 @@ const styles = StyleSheet.create({
     color: '#05375a',
   },
   errorMsg: {
-    color: '#FF0000',
-    fontSize: 14,
+    color: '#ff0048',
+    fontSize: 12,
   },
   button: {
     alignItems: 'center',
