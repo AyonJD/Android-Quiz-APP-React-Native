@@ -121,7 +121,7 @@ const LoginScreen = ({ navigation }) => {
         style={styles.loginImage}
       />
       <View style={styles.header}>
-        <Text style={styles.text_header}>Welcome!</Text>
+        <Text style={styles.text_header}>Welcome to Quizze!</Text>
       </View>
       <Animatable.View
         animation="fadeInUpBig"
@@ -233,7 +233,7 @@ const LoginScreen = ({ navigation }) => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => navigation.navigate('SignUpScreen')}
+            onPress={() => navigation.navigate('Register')}
             style={[styles.signIn, {
               borderColor: '#009387',
               borderWidth: 1,
