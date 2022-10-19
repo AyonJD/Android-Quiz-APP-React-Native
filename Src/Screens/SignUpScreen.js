@@ -27,11 +27,13 @@ const SignUpScreen = ({ navigation }) => {
         secureTextEntry: true,
         isValidUser: true,
         isValidPassword: true,
+        isValidConfirmPassword: true,
     });
     const [user, setUser] = React.useState({
         email: '',
         userName: ''
     });
+    const [confirmPassword, setConfirmPassword] = React.useState('');
 
     const { colors } = useTheme();
 
@@ -69,6 +71,21 @@ const SignUpScreen = ({ navigation }) => {
             });
         }
     }
+    const handleConfirmPasswordChange = (val) => {
+        if (val.trim().length >= 8) {
+            setConfirmPassword(val);
+            setData({
+                ...data,
+                isValidConfirmPassword: true
+            });
+        } else {
+            setData({
+                ...data,
+                isValidConfirmPassword: false
+            });
+            setConfirmPassword(val);
+        }
+    }
 
     const updateSecureTextEntry = () => {
         setData({
@@ -92,10 +109,16 @@ const SignUpScreen = ({ navigation }) => {
         }
     }
 
-    const loginHandle = (email, password) => {
+    const handleSignUp = (email, password) => {
 
-        if (data.email.length === 0 || data.password.length === 0) {
+        if (data.email.length === 0 || data.password.length === 0 || confirmPassword.length === 0) {
             Alert.alert('Wrong Input!', 'email or password field cannot be empty.', [
+                { text: 'OK' }
+            ]);
+            return;
+        }
+        if (data.password !== confirmPassword) {
+            Alert.alert('Wrong Input!', 'passwords do not match.', [
                 { text: 'OK' }
             ]);
             return;
@@ -231,7 +254,7 @@ const SignUpScreen = ({ navigation }) => {
                             color: colors.text
                         }]}
                         autoCapitalize="none"
-                        onChangeText={(val) => handlePasswordChange(val)}
+                        onChangeText={(val) => handleConfirmPasswordChange(val)}
                     />
                     <TouchableOpacity
                         onPress={updateSecureTextEntry}
@@ -251,7 +274,7 @@ const SignUpScreen = ({ navigation }) => {
                         }
                     </TouchableOpacity>
                 </View>
-                {data.isValidPassword ? null :
+                {data.isValidConfirmPassword ? null :
                     <Animatable.View animation="fadeInLeft" duration={500}>
                         <Text style={styles.errorMsg}>Password must be 8 characters long.</Text>
                     </Animatable.View>
@@ -264,7 +287,7 @@ const SignUpScreen = ({ navigation }) => {
                 <View style={styles.button}>
                     <TouchableOpacity
                         style={styles.signIn}
-                        onPress={() => { loginHandle(data.email, data.password) }}
+                        onPress={() => { handleSignUp(data.email, data.password) }}
                     >
                         <LinearGradient
                             colors={['#08d4c4', '#01ab9d']}
@@ -305,7 +328,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-end',
         paddingHorizontal: 20,
-        paddingBottom: 20
+        paddingBottom: 10
     },
     loginImage: {
         width: '45%',
@@ -319,7 +342,7 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         paddingHorizontal: 20,
-        paddingVertical: 30
+        paddingVertical: 20
     },
     text_header: {
         color: '#fff',
