@@ -7,7 +7,7 @@ import {
   StyleSheet,
   StatusBar,
   Alert,
-  Image
+  Image,
 } from 'react-native'
 import React from 'react';
 import * as Animatable from 'react-native-animatable';
@@ -17,6 +17,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import { useTheme } from 'react-native-paper';
 import auth from '../../firebase.init';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = ({ navigation }) => {
 
@@ -102,7 +103,7 @@ const LoginScreen = ({ navigation }) => {
     }
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        // Signed in 
+        AsyncStorage.setItem('token', `${userCredential.user.uid}`);
         const userData = userCredential.user;
         setUser({ email: userData?.email, userName: userData?.email?.split('@')[0] });
         navigation.navigate('Home', { user: { email: userData?.email, userName: userData?.email?.split('@')[0] } });
