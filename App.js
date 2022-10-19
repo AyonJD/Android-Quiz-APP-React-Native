@@ -1,19 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import LoginScreen from './Src/Screens/LoginScreen';
-import SignUpScreen from './Src/Screens/SignUpScreen';
+import AuthNavigation from './Src/Components/Navigation/AuthNavigation';
+import ScreenNavigation from './Src/Components/Navigation/ScreenNavigation';
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
+
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen options={{headerShown: false}} name="Login" component={LoginScreen} />
-        <Stack.Screen options={{headerShown: false}} name="Register" component={SignUpScreen} />
-      </Stack.Navigator>
+      <AuthNavigation />
+      {/* <ScreenNavigation /> */}
     </NavigationContainer>
   );
 }

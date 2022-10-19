@@ -126,8 +126,9 @@ const SignUpScreen = ({ navigation }) => {
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 // Signed in 
-                const user = userCredential.user;
-                setUser({ email: user?.email, userName: user?.email?.split('@')[0] });
+                const userData = userCredential.user;
+                setUser({ email: userData?.email, userName: userData?.email?.split('@')[0] });
+                navigation.navigate('Home', { user: { email: userData?.email, userName: userData?.email?.split('@')[0] } });
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -140,7 +141,7 @@ const SignUpScreen = ({ navigation }) => {
         <View style={styles.container}>
             <StatusBar backgroundColor='#009387' barStyle="light-content" />
             <Image
-                source={require('../../assets/login.png')}
+                source={require('../../assets/signup.png')}
                 style={styles.loginImage}
             />
             <View style={styles.header}>
@@ -280,7 +281,6 @@ const SignUpScreen = ({ navigation }) => {
                     </Animatable.View>
                 }
 
-
                 <TouchableOpacity>
                     <Text style={{ color: '#009387', marginTop: 15 }}>Forgot password?</Text>
                 </TouchableOpacity>
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-end',
         paddingHorizontal: 20,
-        paddingBottom: 10
+        paddingBottom: 15
     },
     loginImage: {
         width: '45%',

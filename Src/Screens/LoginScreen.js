@@ -103,8 +103,9 @@ const LoginScreen = ({ navigation }) => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in 
-        const user = userCredential.user;
-        setUser({ email: user?.email, userName: user?.email?.split('@')[0] });
+        const userData = userCredential.user;
+        setUser({ email: userData?.email, userName: userData?.email?.split('@')[0] });
+        navigation.navigate('Home', { user: { email: userData?.email, userName: userData?.email?.split('@')[0] } });
       })
       .catch((error) => {
         const errorCode = error.code;
