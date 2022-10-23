@@ -1,10 +1,14 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, Button } from 'react-native'
 import React from 'react'
+import { AuthContext } from '../../App';
 
-const HomeScreen = ({ navigation, route }) => {
+const HomeScreen = () => {
+    const { token, user, logoutToken } = React.useContext(AuthContext);
+    console.log(token, user)
     return (
         <View style={styles.container}>
             <Text style={styles.welcomeHeader}>Welcome</Text>
+            <Button title='Sign Out' onPress={logoutToken} />
         </View>
     )
 }

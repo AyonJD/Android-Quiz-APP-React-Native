@@ -9,7 +9,7 @@ import {
   Alert,
   Image,
 } from 'react-native'
-import React from 'react';
+import React, { useContext } from 'react';
 import * as Animatable from 'react-native-animatable';
 import { LinearGradient } from 'expo-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -18,9 +18,9 @@ import { useTheme } from 'react-native-paper';
 import auth from '../../firebase.init';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AuthContext } from '../../App';
 
 const LoginScreen = ({ navigation }) => {
-
   const [data, setData] = React.useState({
     email: '',
     password: '',
@@ -29,12 +29,10 @@ const LoginScreen = ({ navigation }) => {
     isValidUser: true,
     isValidPassword: true,
   });
-  const [user, setUser] = React.useState({
-    email: '',
-    userName: ''
-  });
 
   const { colors } = useTheme();
+  const { token, loginToken, user } = useContext(AuthContext);
+  console.log(token, user)
 
   const textInputChange = (val) => {
     const emailRegex = new RegExp(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
@@ -100,13 +98,21 @@ const LoginScreen = ({ navigation }) => {
         { text: 'OK' }
       ]);
       return;
-    }
+    };
+
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        AsyncStorage.setItem('token', `${userCredential.user.uid}`);
         const userData = userCredential.user;
-        setUser({ email: userData?.email, userName: userData?.email?.split('@')[0] });
-        navigation.navigate('Home', { user: { email: userData?.email, userName: userData?.email?.split('@')[0] } });
+        AsyncStorage.setItem('token', `${userCredential.user.uid}`);
+        AsyncStorage.setItem('user', JSON.stringify({ email: userData?.email, userName: userData?.email?.split('@')[0] }));
+        loginToken(userCredential.user.uid, { email: userData?.email, userName: userData?.email?.split('@')[0] });
+
+        if (userCredential.user.uid) {
+          Alert.alert('Success!', 'You have successfully logged in.', [
+            { text: 'OK' }
+          ]);
+          // navigation.navigate('ScreenNavigation' , {screen: 'Home'} );
+        }
       })
       .catch((error) => {
         const errorCode = error.code;
