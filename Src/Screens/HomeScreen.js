@@ -4,7 +4,7 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 const HomeScreen = ({ navigation }) => {
     return (
         <View style={styles.container}>
-            <Text>Quizze</Text>
+            <Text style={styles.testResult}>Start your test</Text>
             <View style={styles.bannerContainer}>
                 <Image
                     source={require('../../assets/quiz_home.png')}
@@ -24,6 +24,18 @@ const HomeScreen = ({ navigation }) => {
 export default HomeScreen;
 
 const styles = StyleSheet.create({
+    testResult: {
+        fontSize: 25,
+        fontWeight: 'bold',
+        color: 'black',
+        marginBottom: 40,
+        textAlign: 'center',
+        borderBottomColor: '#009387',
+        borderBottomWidth: 2,
+        paddingBottom: 10,
+        width: '50%',
+        alignSelf: 'center',
+    },
     banner: {
         height: 300,
         width: 300,
