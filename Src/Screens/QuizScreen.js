@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 
 
 const shuffleArray = (array) => {
@@ -67,41 +67,43 @@ const Quiz = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            {isLoading ? <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                <Text style={{ fontSize: 32, fontWeight: '700' }}>LOADING...</Text>
-            </View> : questions && (
-                <View style={styles.parent}>
-                    <View style={styles.top}>
-                        <Text style={styles.question}>Q. {decodeURIComponent(questions[ques].question)}</Text>
-                    </View>
-                    <View style={styles.options}>
-
-                        <TouchableOpacity style={styles.optionButtom} onPress={() => handlSelectedOption(options[0])}>
-                            <Text style={styles.option}>{decodeURIComponent(options[0])}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.optionButtom} onPress={() => handlSelectedOption(options[1])}>
-                            <Text style={styles.option}>{decodeURIComponent(options[1])}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.optionButtom} onPress={() => handlSelectedOption(options[2])}>
-                            <Text style={styles.option}>{decodeURIComponent(options[2])}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.optionButtom} onPress={() => handlSelectedOption(options[3])}>
-                            <Text style={styles.option}>{decodeURIComponent(options[3])}</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.bottom}>
-
-                        {ques !== 9 && <TouchableOpacity style={styles.button} onPress={handleNextPress}>
-                            <Text style={styles.buttonText}>SKIP</Text>
-                        </TouchableOpacity>}
-
-                        {ques === 9 && <TouchableOpacity style={styles.button} onPress={handleShowResult}>
-                            <Text style={styles.buttonText}>SHOW RESULTS</Text>
-                        </TouchableOpacity>}
-
-                    </View>
+            {isLoading ?
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                    <ActivityIndicator size="large" />
                 </View>
-            )}
+                : questions && (
+                    <View style={styles.parent}>
+                        <View style={styles.top}>
+                            <Text style={styles.question}>Q. {decodeURIComponent(questions[ques].question)}</Text>
+                        </View>
+                        <View style={styles.options}>
+
+                            <TouchableOpacity style={styles.optionButtom} onPress={() => handlSelectedOption(options[0])}>
+                                <Text style={styles.option}>{decodeURIComponent(options[0])}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.optionButtom} onPress={() => handlSelectedOption(options[1])}>
+                                <Text style={styles.option}>{decodeURIComponent(options[1])}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.optionButtom} onPress={() => handlSelectedOption(options[2])}>
+                                <Text style={styles.option}>{decodeURIComponent(options[2])}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.optionButtom} onPress={() => handlSelectedOption(options[3])}>
+                                <Text style={styles.option}>{decodeURIComponent(options[3])}</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.bottom}>
+
+                            {ques !== 9 && <TouchableOpacity style={styles.button} onPress={handleNextPress}>
+                                <Text style={styles.buttonText}>SKIP</Text>
+                            </TouchableOpacity>}
+
+                            {ques === 9 && <TouchableOpacity style={styles.button} onPress={handleShowResult}>
+                                <Text style={styles.buttonText}>SHOW RESULTS</Text>
+                            </TouchableOpacity>}
+
+                        </View>
+                    </View>
+                )}
         </View>
     );
 };
