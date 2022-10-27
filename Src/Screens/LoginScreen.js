@@ -17,7 +17,6 @@ import Feather from 'react-native-vector-icons/Feather';
 import { useTheme } from 'react-native-paper';
 import auth from '../../firebase.init';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from '../../App';
 
 const LoginScreen = ({ navigation }) => {
@@ -31,8 +30,7 @@ const LoginScreen = ({ navigation }) => {
   });
 
   const { colors } = useTheme();
-  const { token, loginToken, user } = useContext(AuthContext);
-  console.log(token, user)
+  const {  loginToken } = useContext(AuthContext);
 
   const textInputChange = (val) => {
     const emailRegex = new RegExp(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
@@ -103,8 +101,6 @@ const LoginScreen = ({ navigation }) => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const userData = userCredential.user;
-        AsyncStorage.setItem('token', `${userCredential.user.uid}`);
-        AsyncStorage.setItem('user', JSON.stringify({ email: userData?.email, userName: userData?.email?.split('@')[0] }));
         loginToken(userCredential.user.uid, { email: userData?.email, userName: userData?.email?.split('@')[0] });
 
         if (userCredential.user.uid) {

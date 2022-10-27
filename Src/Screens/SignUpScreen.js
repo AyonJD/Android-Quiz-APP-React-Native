@@ -9,7 +9,7 @@ import {
     Alert,
     Image
 } from 'react-native'
-import React from 'react';
+import React, { useContext } from 'react';
 import * as Animatable from 'react-native-animatable';
 import { LinearGradient } from 'expo-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -17,9 +17,11 @@ import Feather from 'react-native-vector-icons/Feather';
 import { useTheme } from 'react-native-paper';
 import auth from '../../firebase.init';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { AuthContext } from '../../App';
 
 const SignUpScreen = ({ navigation }) => {
 
+    const { loginToken } = useContext(AuthContext);
     const [data, setData] = React.useState({
         email: '',
         password: '',
@@ -128,7 +130,7 @@ const SignUpScreen = ({ navigation }) => {
                 // Signed in 
                 const userData = userCredential.user;
                 setUser({ email: userData?.email, userName: userData?.email?.split('@')[0] });
-                navigation.navigate('Home', { user: { email: userData?.email, userName: userData?.email?.split('@')[0] } });
+                loginToken(userCredential.user.uid, { email: userData?.email, userName: userData?.email?.split('@')[0] });
             })
             .catch((error) => {
                 const errorCode = error.code;
